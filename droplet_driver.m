@@ -28,7 +28,7 @@ function droplet_driver(T,RH,Vair,d0,Input_file,Ini_velo)
 %Parameters should be provided in the following manner:
 %            T    ---    temperature of the environment (Kelvin)
 %           RH    ---    relative humidity of the environment
-%          Vair   ---    air velocity, must be a 3*1 matrix
+%          Vair   ---    air velocity, must be a N*3 matrix
 %           d0    ---    the initial diameter of the droplet. The initial
 %                        diameter and probability distribution of speech droplets 
 %                        can be found in the supporting information of my paper.
@@ -36,24 +36,24 @@ function droplet_driver(T,RH,Vair,d0,Input_file,Ini_velo)
 %                        default "input.xlsx"
 %      Ini_velo   ---    initial velocity of droplets leaving respiratory
 %                        tract, by default is 4.1 m/s, corresponding to
-%                        speech droplets. Must be a 3*1 matrix
+%                        speech droplets. Must be a N*3 matrix
 %%
-if nargs < 4
+if nargin < 4
     error('Error: Not enough input.\n');
 end
-if nargs < 5
+if nargin < 5
     Input_file = './input.xlsx';
 end
-if nargs < 6
-    Ini_velo = 4.1;
+if nargin < 6
+    Ini_velo = [4.1,0,0];
 end
 
 %loop over each element in T, RH,Vair matrix
 for in = 1:numel(T)
     for jn = 1:numel(RH)
-        for kn = 1:numel(Vair)
+        for kn = 1:size(Vair)
             for ln = 1:numel(d0)
-                for mn = 1:numel(Ini_velo)
+                for mn = 1:size(Ini_velo)
                     %check the validity of the input data
                     if T(in)<273.14 || T(in)>373.15
                         fprintf('Warning: Nonphysical temperature %6.1f found\n',T(in));
@@ -64,14 +64,19 @@ for in = 1:numel(T)
                         fprintf('Correct humidity range is 0.0-1.0\n');
                     end
                     fprintf('New simulations initialized for:\n\n');
-                    fprintf('Temperature %6.1f C, Humidity %3.2f,  Air velocity (%6.2f  %6.2f  %6.2f) m/s\n\n',...
-                        T(in),RH(jn),Vair(kn));
+                    fprintf('Temperature %6.1f C, Humidity %3.2f\n',...
+                        T(in)-273.15,RH(jn));
+                    fprintf('Wind velocity (%6.2f %6.2f %6.2f) m/s\n',...
+                        Vair(kn,:));
+                    fprintf('Droplet initial velocity (%6.2f %6.2f %6.2f) m/s\n',...
+                        Ini_velo(mn,:));
+                    fprintf('Initial droplet diameter %6.1f um\n',d0(ln)*1e6);
                     %write all input parameters into Input_file
                     writematrix(T(in),Input_file,'Sheet','variables','Range','B2');
                     writematrix(RH(jn),Input_file,'Sheet','variables','Range','B4');
-                    writematrix(Vair(kn),Input_file,'Sheet','variables','Range','B13');
+                    writematrix(Vair(kn,:)',Input_file,'Sheet','variables','Range','B13');
                     writematrix(d0(ln),Input_file,'Sheet','variables','Range','B5');
-                    writematrix(Ini_velo(mn),Input_file,'Sheet','variables','Range','B10');
+                    writematrix(Ini_velo(mn,:)',Input_file,'Sheet','variables','Range','B10');
                     %start simulations
                     travelingdrop;
                 end
