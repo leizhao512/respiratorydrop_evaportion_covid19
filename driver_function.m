@@ -44,8 +44,11 @@ function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
 %      Evap_time    ---  The time requires for the droplet to fully evaporate
 %                        or fall to the level of hand.
 % Residual_diameter ---  The diameter of droplet residues
-%        Lmax       ---  horizontal traveling distancem
-% Falling_distance  --- distance that the droplet can fall
+%        Lmax       ---  horizontal traveling distance of the droplet before 
+%                        fully evaporating or falling to the level of hand.
+%                        (Detailed definition can be found in the paper)
+% Falling_distance  --- distance that the droplet can fall. (Detailed 
+%                       definition can be found in the paper)
 %
 % The size of the droplet is initialized as N1*N2*N3*N4*N5, where N1, N2, 
 % N3, N4, N5 are the row dimensions of T, RH, Vair, d0, Ini_velo
