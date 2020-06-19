@@ -11,7 +11,7 @@ function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
 %propagation of respiratory droplets." medRxiv (2020).
 %doi: https://doi.org/10.1101/2020.05.24.20111963
 
-%All the model formulation and parameter values can be found in the article
+%All the model formulations and parameter values can be found in the paper.
 
 %This code was made and run on Matlab R2019b and some of its functions may
 %require Matlab 2019b or later version.
@@ -20,7 +20,7 @@ function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
 %parameter names and values, and save it in the same folder.
 
 %%
-%This is the driver function for simulating the evaporation of a
+%This is the DRIVER FUNCTION for simulating the evaporation of a
 %respiratory droplet and is used to provide adjustable weather and wind
 %conditions for the following simulations. 
 
@@ -30,24 +30,24 @@ function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
 %            T    ---    temperature of the environment (Kelvin),N*1 matrix
 %           RH    ---    relative humidity of the environment, N*1 matrix
 %          Vair   ---    air velocity, must be a N*3 matrix
-%           d0    ---    the initial diameter of the droplet. The initial
+%           d0    ---    the initial diameter of the droplet (m). The initial
 %                        diameter and probability distribution of speech droplets 
 %                        can be found in the supporting information of our paper.
 %                        N*1 matrix
 % Parameter_File  ---    the csv/xlsx file that stores all parameters, by
 %                        default "input.xlsx"
 %      Ini_velo   ---    initial velocity of droplets leaving respiratory
-%                        tract, by default is 4.1 m/s, corresponding to
+%                        tract (m/s), by default is 4.1 m/s, corresponding to
 %                        speech droplets. Must be a N*3 matrix
 %
 %Output variables are:
-%      Evap_time    ---  The time requires for the droplet to fully evaporate
-%                        or fall to the level of hand.
-% Residual_diameter ---  The diameter of droplet residues
+%      Evap_time    ---  The time required for the droplet to fully evaporate
+%                        or fall to the level of hand. (s)
+% Residual_diameter ---  The diameter of droplet residues (um)
 %        Lmax       ---  horizontal traveling distance of the droplet before 
-%                        fully evaporating or falling to the level of hand.
+%                        fully evaporating or falling to the level of hand. (m)
 %                        (Detailed definition can be found in the paper)
-% Falling_distance  --- distance that the droplet can fall. (Detailed 
+% Falling_distance  --- distance that the droplet can fall. (m) (Detailed 
 %                       definition can be found in the paper)
 %
 % The size of the droplet is initialized as N1*N2*N3*N4*N5, where N1, N2, 
