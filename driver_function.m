@@ -1,5 +1,5 @@
 function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
-    droplet_driver(T,RH,Vair,d0,Parameter_File,Ini_velo)
+    driver_function(T,RH,Vair,d0,Parameter_File,Ini_velo)
 %%
 %**************************************************************************
 %
