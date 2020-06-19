@@ -1,4 +1,5 @@
-function droplet_driver(T,RH,Vair,d0,Input_file,Ini_velo)
+function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
+    droplet_driver(T,RH,Vair,d0,Parameter_File,Ini_velo)
 %%
 %**************************************************************************
 %
@@ -26,34 +27,58 @@ function droplet_driver(T,RH,Vair,d0,Input_file,Ini_velo)
 %The minimum input variables is 4.
 
 %Parameters should be provided in the following manner:
-%            T    ---    temperature of the environment (Kelvin)
-%           RH    ---    relative humidity of the environment
+%            T    ---    temperature of the environment (Kelvin),N*1 matrix
+%           RH    ---    relative humidity of the environment, N*1 matrix
 %          Vair   ---    air velocity, must be a N*3 matrix
 %           d0    ---    the initial diameter of the droplet. The initial
 %                        diameter and probability distribution of speech droplets 
 %                        can be found in the supporting information of my paper.
-%     Input_file  ---    the csv/xlsx file that stores all parameters, by
+%                        N*1 matrix
+% Parameter_File  ---    the csv/xlsx file that stores all parameters, by
 %                        default "input.xlsx"
 %      Ini_velo   ---    initial velocity of droplets leaving respiratory
 %                        tract, by default is 4.1 m/s, corresponding to
 %                        speech droplets. Must be a N*3 matrix
+%
+%Output variables are:
+%      Evap_time    ---  The time requires for the droplet to fully evaporate
+%                        or fall to the level of hand.
+% Residual_diameter ---  The diameter of droplet residues
+%        Lmax       ---  horizontal traveling distancem
+% Falling_distance  --- distance that the droplet can fall
+%
+% The size of the droplet is initialized as N1*N2*N3*N4*N5, where N1, N2, 
+% N3, N4, N5 are the row dimensions of T, RH, Vair, d0, Ini_velo
 %%
 if nargin < 4
     error('Error: Not enough input.\n');
 end
 if nargin < 5
-    Input_file = './input.xlsx';
+    Parameter_File = './input.xlsx';
 end
 if nargin < 6
     Ini_velo = [4.1,0,0];
 end
 
+%calculate the dimension of input variables
+[N1,~] = size(T);
+[N2,~] = size(RH);
+[N3,~] = size(Vair);
+[N4,~] = size(d0);
+[N5,~] = size(Ini_velo);
+
+%initialize output matrice
+Evap_time = zeros(N1,N2,N3,N4,N5);
+Residue_diameter = zeros(N1,N2,N3,N4,N5);
+Lmax = zeros(N1,N2,N3,N4,N5);
+Falling_distance = zeros(N1,N2,N3,N4,N5);
+
 %loop over each element in T, RH,Vair matrix
-for in = 1:numel(T)
-    for jn = 1:numel(RH)
-        for kn = 1:size(Vair)
-            for ln = 1:numel(d0)
-                for mn = 1:size(Ini_velo)
+for in = 1:N1
+    for jn = 1:N2
+        for kn = 1:N3
+            for ln = 1:N4
+                for mn = 1:N5
                     %check the validity of the input data
                     if T(in)<273.14 || T(in)>373.15
                         fprintf('Warning: Nonphysical temperature %6.1f found\n',T(in));
@@ -72,18 +97,21 @@ for in = 1:numel(T)
                         Ini_velo(mn,:));
                     fprintf('Initial droplet diameter %6.1f um\n',d0(ln)*1e6);
                     %write all input parameters into Input_file
-                    writematrix(T(in),Input_file,'Sheet','variables','Range','B2');
-                    writematrix(RH(jn),Input_file,'Sheet','variables','Range','B4');
-                    writematrix(Vair(kn,:)',Input_file,'Sheet','variables','Range','B13');
-                    writematrix(d0(ln),Input_file,'Sheet','variables','Range','B5');
-                    writematrix(Ini_velo(mn,:)',Input_file,'Sheet','variables','Range','B10');
+                    writematrix(T(in),Parameter_File,'Sheet','variables','Range','B2');
+                    writematrix(RH(jn),Parameter_File,'Sheet','variables','Range','B4');
+                    writematrix(Vair(kn,:)',Parameter_File,'Sheet','variables','Range','B13');
+                    writematrix(d0(ln),Parameter_File,'Sheet','variables','Range','B5');
+                    writematrix(Ini_velo(mn,:)',Parameter_File,'Sheet','variables','Range','B10');
                     %start simulations
                     travelingdrop;
+                    %store output variables
+                    Evap_time(mn,ln,kn,jn,in) = tevap;
+                    Residue_diameter(mn,ln,kn,jn,in) = dres;
+                    Lmax(mn,ln,kn,jn,in) =x0 ;
+                    Falling_distance(mn,ln,kn,jn,in) = z0;
                 end
             end
         end
     end
 end
-
-
 end
