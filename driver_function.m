@@ -16,7 +16,7 @@ function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
 %This code was made and run on Matlab R2019b and some of its functions may
 %require Matlab 2019b or later version.
 
-%Make sure you provide an input csv/xls file, which stores all the
+%Make sure you provide an input a csv/xls file, which stores all the
 %parameter names and values, and save it in the same folder.
 
 %%
