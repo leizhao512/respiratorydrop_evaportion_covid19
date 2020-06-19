@@ -32,7 +32,7 @@ function [Evap_time,Residue_diameter,Lmax,Falling_distance] = ...
 %          Vair   ---    air velocity, must be a N*3 matrix
 %           d0    ---    the initial diameter of the droplet. The initial
 %                        diameter and probability distribution of speech droplets 
-%                        can be found in the supporting information of my paper.
+%                        can be found in the supporting information of our paper.
 %                        N*1 matrix
 % Parameter_File  ---    the csv/xlsx file that stores all parameters, by
 %                        default "input.xlsx"
